@@ -32,6 +32,18 @@ services:
       - DATABASE_URL=postgresql://postgres:password@db:5432/myapp_development
       - REDIS_URL=redis://redis:6379/0
 
+  sidekiq:
+    build: .
+    command: bundle exec sidekiq
+    volumes:
+      - .:/rails
+    depends_on:
+      - db
+      - redis
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@db:5432/myapp_development
+      - REDIS_URL=redis://redis:6379/0
+
   test:
     build: .
     command: /bin/bash -c "bundle install && RAILS_ENV=test bundle exec rails db:create db:migrate && RAILS_ENV=test bundle exec rspec"
